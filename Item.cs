@@ -1,14 +1,20 @@
 using System;
+using System.Text.Json.Serialization;
 
 namespace OneListClient
 {
     public class Item
     {
-        public int id { get; set; }//default getter and setter
-        public string text { get; set; }
-        public bool complete { get; set; }
-        public DateTime created_at { get; set; }
-        public DateTime updated_at { get; set; }
+        [JsonPropertyName("id")] //this is an annotation, it tells the compiler to do something
+        public int Id { get; set; }//default getter and setter
+        [JsonPropertyName("text")]
+        public string Text { get; set; }
+        [JsonPropertyName("complete")]
+        public bool Complete { get; set; }
+        [JsonPropertyName("created_at")]
+        public DateTime CreatedAt { get; set; }
+        [JsonPropertyName("updated_at")]
+        public DateTime UpdatedAt { get; set; }
         //note the property names are the same as the JSON keys and match the case
 
         //what if costumed getter and setter
@@ -16,7 +22,7 @@ namespace OneListClient
         {//read only, code supported property
             get
             {
-                return complete ? "Completed" : "Incomplete";
+                return Complete ? "Completed" : "Incomplete";
                 // if (complete)
                 // {
                 //     return "Complete";
