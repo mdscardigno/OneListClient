@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
 using ConsoleTables;
+using Pastel;
 
 namespace OneListClient
 {
@@ -25,7 +27,7 @@ namespace OneListClient
                                                                                                 //Back in the world of List/LINQ/C#
 
             //using Console Tables for fancy output
-            var table = new ConsoleTable("Description", "Created At", "Completed Status");
+            var table = new ConsoleTable("Description".Pastel(Color.Red), "Created At".Pastel(Color.Red), "Completed Status".Pastel(Color.Red));
 
 
 
