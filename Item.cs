@@ -16,7 +16,7 @@ namespace OneListClient
         {//read only, code supported property
             get
             {
-                return complete ? "Complete" : "Incomplete";
+                return complete ? "Completed" : "Incomplete";
                 // if (complete)
                 // {
                 //     return "Complete";
