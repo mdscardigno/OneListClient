@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
+using ConsoleTables;
 
 namespace OneListClient
 {
@@ -21,11 +22,19 @@ namespace OneListClient
             //                                      Describe the Shape of the Data (array in JSON => List, Object => Item class )
             //                                                  v   v
             var items = await JsonSerializer.DeserializeAsync<List<Item>>(responseBodyAsStream);//turning this into an sync
-            //Back in the world of List/LINQ/C#
+                                                                                                //Back in the world of List/LINQ/C#
+
+            //using Console Tables for fancy output
+            var table = new ConsoleTable("Description", "Created At", "Completed Status");
+
+
+
             foreach (var item in items)
             {
-                Console.WriteLine($"The task {item.Text} was created on {item.CreatedAt} and has a completion of {item.CompletedStatus} ");
+                table.AddRow(item.Text, item.CreatedAt, item.CompletedStatus);
             }
+
+            table.Write();
         }
     }
 }
