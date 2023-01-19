@@ -32,7 +32,7 @@ namespace OneListClient
             while (keepGoing)
             {
                 Console.Clear();
-                Console.WriteLine("Get (A)ll Todo, (C)reate a New Item, (U)pdate, (O)ne Todo or (Q)uit");
+                Console.WriteLine("Get (A)ll Todo, (C)reate a New Item, (U)pdate, (O)ne Todo, (D)elete, or (Q)uit");
                 var choice = Console.ReadLine().ToUpper();
 
                 switch (choice)
@@ -74,6 +74,14 @@ namespace OneListClient
                             Complete = newComplete
                         };
                         await UpdateOneItem(token, existingId, updatedItem);
+                        Console.WriteLine("Press ENTER to continue");
+                        Console.ReadLine();
+                        break;
+
+                    case "D":
+                        Console.Write("Enter the ID of the item to delete: ");
+                        var deleteId = int.Parse(Console.ReadLine());
+                        await DeleteOneItem(token, deleteId);
                         Console.WriteLine("Press ENTER to continue");
                         Console.ReadLine();
                         break;
@@ -185,6 +193,23 @@ namespace OneListClient
                 {
                     Console.WriteLine("I could not find that list");
                 }
+            }
+        }
+
+        private static async Task DeleteOneItem(string token, int deleteId)
+        {
+            // throw new NotImplementedException();
+            try
+            {
+                var client = new HttpClient();
+
+                var url = $"https://one-list-api.herokuapp.com/items/{deleteId}?access_token={token}";
+
+                await client.DeleteAsync(url);
+            }
+            catch (HttpRequestException)
+            {
+                Console.WriteLine("I could not find that item");
             }
         }
 
