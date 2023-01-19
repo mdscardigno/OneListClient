@@ -32,7 +32,7 @@ namespace OneListClient
             while (keepGoing)
             {
                 Console.Clear();
-                Console.WriteLine("Get (A)ll Todo, (C)reate a New Item, (O)ne Todo or (Q)uit");
+                Console.WriteLine("Get (A)ll Todo, (C)reate a New Item, (U)pdate, (O)ne Todo or (Q)uit");
                 var choice = Console.ReadLine().ToUpper();
 
                 switch (choice)
@@ -61,6 +61,23 @@ namespace OneListClient
                         Console.WriteLine("Press ENTER to continue");
                         Console.ReadLine();
                         break;
+                    case "U":
+                        Console.Write("Enter the ID of the item to update: ");
+                        var existingId = int.Parse(Console.ReadLine());
+                        Console.Write("Enter the new description: ");
+                        var newText = Console.ReadLine();
+                        Console.Write("Enter yes or no to indicate if the item is complete: ");
+                        var newComplete = Console.ReadLine().ToLower() == "yes";
+                        var updatedItem = new Item
+                        {
+                            Text = newText,
+                            Complete = newComplete
+                        };
+                        await UpdateOneItem(token, existingId, updatedItem);
+                        Console.WriteLine("Press ENTER to continue");
+                        Console.ReadLine();
+                        break;
+
                     case "Q":
                         keepGoing = false;
                         break;
@@ -162,7 +179,7 @@ namespace OneListClient
                         table.AddRow(item.Text, item.CreatedAt, item.CompletedStatus);
                     }
 
-                    table.Write();
+                    table.Write(Format.Minimal);
                 }
                 catch (HttpRequestException)
                 {
@@ -171,6 +188,32 @@ namespace OneListClient
             }
         }
 
+        static async Task UpdateOneItem(string token, int existingId, Item updatedItem)
+        {
+            // throw new NotImplementedException();
+            var client = new HttpClient();
+            var url = $"https://one-list-api.herokuapp.com/items/{existingId}?access_token={token}";
+
+            var jsonBody = JsonSerializer.Serialize(updatedItem);
+
+            var jsonBodyAsContent = new StringContent(jsonBody);
+            jsonBodyAsContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+            //send the put request and supply the JSON body
+            var response = await client.PutAsync(url, jsonBodyAsContent);
+
+            //get the response as a stream
+            var responseJSON = await response.Content.ReadAsStreamAsync();
+
+            //supply that stream of data to Deserialize that will interpret it as a single item
+            var item = await JsonSerializer.DeserializeAsync<Item>(responseJSON); //turning this into an sync
+
+            //make a table to output our new item
+            var table = new ConsoleTable("ID".Pastel(Color.Red), "Description".Pastel(Color.Red), "Created At".Pastel(Color.Red), "Updated At".Pastel(Color.Red), "Completed Status".Pastel(Color.Red));
+            table.AddRow(item.Id, item.Text, item.CreatedAt, item.UpdatedAt, item.CompletedStatus);
+
+            //write the table to the console  
+            table.Write();
+        }
 
     }
 }

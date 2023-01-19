@@ -22,15 +22,15 @@ namespace OneListClient
         {//read only, code supported property
             get
             {
-                return Complete ? "Completed" : "Incomplete";
-                // if (complete)
-                // {
-                //     return "Complete";
-                // }
-                // else
-                // {
-                //     return "Incomplete";
-                // }
+                // return Complete ? "completed" : "not completed";
+                if (Complete)
+                {
+                    return "Complete";
+                }
+                else
+                {
+                    return "Incomplete";
+                }
             }
         }
         //c# ternary operator: 
