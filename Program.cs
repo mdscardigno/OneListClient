@@ -42,14 +42,17 @@ namespace OneListClient
                         Console.WriteLine("Press ENTER to continue");
                         Console.ReadLine();
                         break;
+
                     case "O":
-                        Console.WriteLine("Enter the ID of the item you want to see");
+                        Console.WriteLine("Enter the ID of the item you want to see: ");
                         var id = int.Parse(Console.ReadLine());
 
                         await GetOneItemAsync(token, id);
+
                         Console.WriteLine("Press ENTER to continue");
                         Console.ReadLine();
                         break;
+
                     case "C":
                         Console.WriteLine("Enter the description of your new todo: ");
                         var text = Console.ReadLine();
@@ -61,6 +64,7 @@ namespace OneListClient
                         Console.WriteLine("Press ENTER to continue");
                         Console.ReadLine();
                         break;
+
                     case "U":
                         Console.Write("Enter the ID of the item to update: ");
                         var existingId = int.Parse(Console.ReadLine());
@@ -89,6 +93,7 @@ namespace OneListClient
                     case "Q":
                         keepGoing = false;
                         break;
+
                     default:
                         Console.WriteLine("Invalid choice");
                         break;
@@ -102,7 +107,7 @@ namespace OneListClient
 
                 //we are going the other way around. we are turning an object into a string
                 var jsonBody = JsonSerializer.Serialize(newItem);
-
+                //we are going the other direction, from an object to a string
                 //we turn the object into a StringContent object and indicate we are using JSON
                 //ensuring there is a media type header of application/json
 
@@ -135,12 +140,12 @@ namespace OneListClient
                     var client = new HttpClient();
 
                     var responseBodyAsStream = await client.GetStreamAsync($"https://one-list-api.herokuapp.com/items/{id}?access_token={token}");
-
+                    //the shape of the data determines what deserializer you use
                     //                                              Describe the Shape of the Data (Object in JSON => Item)
                     //                                                  v   
                     var item = await JsonSerializer.DeserializeAsync<Item>(responseBodyAsStream);
 
-                    var table = new ConsoleTable("Description".Pastel(Color.Red), "Created At".Pastel(Color.Red), "Completed Status".Pastel(Color.Red));
+                    var table = new ConsoleTable("Description".Pastel(Color.Red), "Created At".Pastel(Color.Red), "Completed Status".Pastel(Color.FromArgb(62, 102, 208)));
                     //we do not loop because we have one item
                     table.AddRow(item.Text, item.CreatedAt, item.CompletedStatus);
 
@@ -166,24 +171,28 @@ namespace OneListClient
 
                     var client = new HttpClient();
                     //list i am using is illustriousvoyage
+
                     var responseBodyAsStream = await client.GetStreamAsync($"https://one-list-api.herokuapp.com/items?access_token={token}");
 
                     //turning this into an sync
                     //this code will happen at the same time our network request is happening
                     //we cannot Console.WriteLine a stream, so we need to deserialize it by feeding it to something called a JSON serializer
                     //Console.WriteLine(responseBodyAsString);
-                    //                                      Describe the Shape of the Data (array in JSON => List, Object => Item class )
+                    // => becomes
+                    //                                      Describe the Shape of the Data (an array in JSON => List, Object in JSON => Item class )
                     //                                                  v   v
                     var items = await JsonSerializer.DeserializeAsync<List<Item>>(responseBodyAsStream);//turning this into an sync
                                                                                                         //Back in the world of List/LINQ/C#
 
                     //using Console Tables for fancy output
-                    var table = new ConsoleTable("Description".Pastel(Color.Red), "Created At".Pastel(Color.Red), "Completed Status".Pastel(Color.Red));
+                    var table = new ConsoleTable("Description".Pastel(Color.FromArgb(62, 102, 208)).PastelBg("FFD000"), "Created At".Pastel(Color.FromArgb(62, 102, 208)).PastelBg("FFD000"), "Completed Status".Pastel(Color.FromArgb(62, 102, 208)).PastelBg("FFD000"));
 
 
 
                     foreach (var item in items)
                     {
+                        //back to the world of List/LINQ/C#
+                        // Console.WriteLine("The task {item.text} was created on {item.Createdat} abd has a completion status of {item.C ompletedstatus}");
                         table.AddRow(item.Text, item.CreatedAt, item.CompletedStatus);
                     }
 

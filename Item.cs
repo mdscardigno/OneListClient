@@ -1,5 +1,7 @@
 using System;
+using System.Drawing;
 using System.Text.Json.Serialization;
+using Pastel;
 
 namespace OneListClient
 {
@@ -25,11 +27,11 @@ namespace OneListClient
                 // return Complete ? "completed" : "not completed";
                 if (Complete)
                 {
-                    return "Complete";
+                    return "Complete".Pastel(Color.FromArgb(50, 205, 50));
                 }
                 else
                 {
-                    return "Incomplete";
+                    return "Incomplete".Pastel(Color.FromArgb(255, 0, 0));
                 }
             }
         }
